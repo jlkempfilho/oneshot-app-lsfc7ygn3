@@ -1,7 +1,7 @@
 import { useMainStore } from '@/stores/main'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Box, Camera, Activity as ActivityIcon, DollarSign } from 'lucide-react'
+import { ArrowRight, Box, Camera, Activity as ActivityIcon, DollarSign, Store } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function Index() {
