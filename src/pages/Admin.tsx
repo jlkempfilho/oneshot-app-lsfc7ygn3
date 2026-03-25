@@ -54,8 +54,15 @@ export default function Admin() {
     })
   }
 
+  const handleTestConnection = (name: string) => {
+    toast({
+      title: 'Conexão Testada',
+      description: `A comunicação com a API do ${name} está normal.`,
+    })
+  }
+
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
       <div>
         <h1 className="text-3xl font-light tracking-tight mb-2">Administração</h1>
         <p className="text-muted-foreground text-sm">
@@ -64,35 +71,35 @@ export default function Admin() {
       </div>
 
       <Tabs defaultValue="marketplaces" className="w-full">
-        <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0 h-auto">
+        <TabsList className="w-full justify-start border-b bg-transparent p-0 h-auto overflow-x-auto">
           <TabsTrigger
             value="config"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
+            className="border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
           >
             Config Empresa
           </TabsTrigger>
           <TabsTrigger
             value="marketplaces"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
+            className="border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
           >
             Marketplaces
           </TabsTrigger>
           <TabsTrigger
             value="finance"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
+            className="border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
           >
             Financeiro
           </TabsTrigger>
           <TabsTrigger
             value="plans"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
+            className="border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 uppercase text-xs tracking-wider font-medium"
           >
             Planos SaaS
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="config" className="pt-6">
-          <Card className="rounded-none border-border/50 shadow-sm">
+          <Card className="border-border/50">
             <CardHeader>
               <CardTitle className="text-lg font-medium">Informações Gerais</CardTitle>
               <CardDescription>
@@ -103,33 +110,25 @@ export default function Admin() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Nome da Empresa</Label>
-                  <Input defaultValue="DK Store Oficial" className="rounded-none" />
+                  <Input defaultValue="DK Store Oficial" />
                 </div>
                 <div className="space-y-2">
                   <Label>Chave PIX Padrão</Label>
-                  <Input defaultValue="contato@dktech.com" className="rounded-none" />
+                  <Input defaultValue="contato@dktech.com" />
                 </div>
                 <div className="space-y-2">
                   <Label>Markup Padrão IA (%)</Label>
-                  <Input
-                    type="number"
-                    value={markup}
-                    onChange={(e) => setMarkup(e.target.value)}
-                    className="rounded-none"
-                  />
+                  <Input type="number" value={markup} onChange={(e) => setMarkup(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label>Simulação de Preço</Label>
-                  <div className="p-3 border bg-muted/30 text-sm">
+                  <div className="p-3 border rounded-md bg-muted/30 text-sm">
                     Custo: R$ 100,00 → Sugestão:{' '}
                     <strong>R$ {(100 * (1 + Number(markup) / 100)).toFixed(2)}</strong>
                   </div>
                 </div>
               </div>
-              <Button
-                onClick={handleSaveConfig}
-                className="rounded-none uppercase tracking-wider text-xs"
-              >
+              <Button onClick={handleSaveConfig} className="uppercase tracking-wider text-xs">
                 Salvar Configurações
               </Button>
             </CardContent>
@@ -143,23 +142,30 @@ export default function Admin() {
               { name: 'Shopee', status: true },
               { name: 'WhatsApp Catalog', status: false },
             ].map((channel) => (
-              <Card key={channel.name} className="rounded-none border-border/50 shadow-sm">
+              <Card key={channel.name} className="border-border/50">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                   <CardTitle className="text-base font-medium">{channel.name}</CardTitle>
                   <Switch checked={channel.status} />
                 </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-muted-foreground mb-4">
+                <CardContent className="space-y-4">
+                  <p className="text-xs text-muted-foreground h-8">
                     {channel.status
                       ? 'Sincronização em tempo real ativa.'
                       : 'Canal pausado ou desconectado.'}
                   </p>
-                  <Button
-                    variant="outline"
-                    className="w-full rounded-none uppercase text-xs tracking-wider"
-                  >
-                    Configurar Token
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" className="w-full text-xs">
+                      Token
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="w-full text-xs"
+                      onClick={() => handleTestConnection(channel.name)}
+                    >
+                      Testar
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -167,15 +173,25 @@ export default function Admin() {
         </TabsContent>
 
         <TabsContent value="finance" className="pt-6 space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h2 className="text-lg font-medium">Desempenho Semanal</h2>
-            <Button variant="outline" className="rounded-none uppercase text-xs tracking-wider">
-              Exportar CSV
-            </Button>
+            <div className="flex items-center gap-3">
+              <Input type="date" className="h-9 w-auto text-sm" defaultValue="2026-03-24" />
+              <Button
+                variant="outline"
+                size="sm"
+                className="uppercase text-xs tracking-wider"
+                onClick={() =>
+                  toast({ title: 'Exportado', description: 'CSV baixado com sucesso.' })
+                }
+              >
+                Exportar CSV
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <Card className="rounded-none border-border/50 p-4">
+            <Card className="border-border/50 p-4">
               <h3 className="text-sm uppercase tracking-widest font-medium mb-4 text-center">
                 Volume Total
               </h3>
@@ -202,7 +218,7 @@ export default function Admin() {
               </ChartContainer>
             </Card>
 
-            <Card className="rounded-none border-border/50 p-4">
+            <Card className="border-border/50 p-4">
               <h3 className="text-sm uppercase tracking-widest font-medium mb-4 text-center">
                 Por Canal
               </h3>
@@ -228,7 +244,7 @@ export default function Admin() {
         </TabsContent>
 
         <TabsContent value="plans" className="pt-6">
-          <Card className="rounded-none border-border/50 shadow-sm">
+          <Card className="border-border/50 overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>

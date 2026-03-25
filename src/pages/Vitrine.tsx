@@ -22,7 +22,7 @@ export default function Vitrine() {
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 animate-fade-in">
       <div className="text-center space-y-4 py-8">
         <h1 className="text-4xl md:text-5xl font-light tracking-tighter">NEW ARRIVALS</h1>
         <p className="text-muted-foreground text-sm uppercase tracking-widest">
@@ -33,15 +33,15 @@ export default function Vitrine() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
         {vitrineProducts.map((product) => (
           <div key={product.id} className="group relative space-y-4">
-            <div className="relative aspect-[3/4] overflow-hidden bg-muted">
+            <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-lg shadow-sm">
               <img
                 src={product.imageUrl}
                 alt={product.title}
-                className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${product.status !== 'available' ? 'opacity-50 grayscale' : ''}`}
+                className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${product.status !== 'available' ? 'opacity-50 grayscale' : ''}`}
               />
               {product.status !== 'available' && (
-                <div className="absolute inset-0 flex items-center justify-center bg-background/20 backdrop-blur-[2px]">
-                  <span className="bg-background px-4 py-2 text-xs uppercase tracking-widest font-medium">
+                <div className="absolute inset-0 flex items-center justify-center bg-background/30 backdrop-blur-[2px]">
+                  <span className="bg-background px-6 py-2 rounded-full shadow-md text-xs uppercase tracking-widest font-medium">
                     Esgotado
                   </span>
                 </div>
@@ -56,7 +56,7 @@ export default function Vitrine() {
               </p>
             </div>
             <Button
-              className="w-full rounded-none opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-20 left-0"
+              className="w-full opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-20 left-0 shadow-md"
               disabled={product.status !== 'available'}
               onClick={() => setSelectedProduct(product)}
             >
@@ -67,7 +67,7 @@ export default function Vitrine() {
       </div>
 
       <Dialog open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
-        <DialogContent className="sm:max-w-md rounded-none border-border">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-center font-light text-2xl tracking-tight">
               Checkout Rapido
@@ -75,9 +75,13 @@ export default function Vitrine() {
           </DialogHeader>
 
           {selectedProduct && checkoutStep === 'details' && (
-            <div className="space-y-6 pt-4">
+            <div className="space-y-6 pt-4 animate-fade-in">
               <div className="flex gap-4 items-center">
-                <img src={selectedProduct.imageUrl} className="w-20 h-24 object-cover" alt="" />
+                <img
+                  src={selectedProduct.imageUrl}
+                  className="w-20 h-24 object-cover rounded-md shadow-sm"
+                  alt=""
+                />
                 <div>
                   <h4 className="font-medium">{selectedProduct.title}</h4>
                   <p className="text-lg font-light mt-1">
@@ -91,16 +95,16 @@ export default function Vitrine() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Nome Completo</Label>
-                  <Input className="rounded-none" placeholder="João da Silva" />
+                  <Input placeholder="João da Silva" />
                 </div>
                 <div className="space-y-2">
                   <Label>Endereço de Entrega (CEP)</Label>
-                  <Input className="rounded-none" placeholder="00000-000" />
+                  <Input placeholder="00000-000" />
                 </div>
               </div>
 
               <Button
-                className="w-full rounded-none uppercase tracking-wider"
+                className="w-full uppercase tracking-wider"
                 size="lg"
                 onClick={() => setCheckoutStep('pix')}
               >
@@ -111,17 +115,14 @@ export default function Vitrine() {
           )}
 
           {checkoutStep === 'pix' && (
-            <div className="space-y-6 pt-4 flex flex-col items-center text-center">
-              <div className="p-4 bg-muted border border-border">
+            <div className="space-y-6 pt-4 flex flex-col items-center text-center animate-fade-in">
+              <div className="p-4 bg-white border rounded-xl shadow-sm">
                 <QrCode className="w-48 h-48 opacity-80" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Escaneie o código para pagar. O estoque será reservado por 5 minutos.
               </p>
-              <Button
-                className="w-full rounded-none uppercase tracking-wider"
-                onClick={handleCheckout}
-              >
+              <Button className="w-full uppercase tracking-wider" onClick={handleCheckout}>
                 Simular Pagamento Aprovado
               </Button>
             </div>

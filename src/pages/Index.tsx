@@ -9,7 +9,7 @@ export default function Index() {
   const navigate = useNavigate()
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-3xl font-light tracking-tight mb-2">Resumo Geral</h1>
@@ -28,7 +28,7 @@ export default function Index() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="rounded-none border-border/50 shadow-sm">
+        <Card className="border-border/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs uppercase tracking-widest text-muted-foreground">
               Valor em Estoque
@@ -44,7 +44,7 @@ export default function Index() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-none border-border/50 shadow-sm">
+        <Card className="border-border/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs uppercase tracking-widest text-muted-foreground">
               Vendas Hoje
@@ -60,7 +60,7 @@ export default function Index() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-none border-border/50 shadow-sm">
+        <Card className="border-border/50">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs uppercase tracking-widest text-muted-foreground">
               Canais Ativos
@@ -74,7 +74,7 @@ export default function Index() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-        <div>
+        <div className="space-y-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm uppercase tracking-widest font-medium">Atividades Recentes</h2>
             <Link
@@ -84,11 +84,11 @@ export default function Index() {
               Ver tudo <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {activities.slice(0, 5).map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-start gap-4 p-4 border border-border/50 bg-card"
+                className="flex items-start gap-4 p-4 border border-border/50 bg-card rounded-lg shadow-sm"
               >
                 <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
                 <div className="flex-1 space-y-1">
@@ -105,7 +105,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="bg-secondary/30 p-8 border border-border/50 flex flex-col items-center justify-center text-center space-y-4">
+        <div className="bg-secondary/30 p-8 border border-border/50 rounded-lg flex flex-col items-center justify-center text-center space-y-4 shadow-sm">
           <Store className="h-12 w-12 text-muted-foreground opacity-50" />
           <h3 className="font-medium text-lg">Sua vitrine está online</h3>
           <p className="text-sm text-muted-foreground max-w-xs">

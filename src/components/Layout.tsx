@@ -2,10 +2,12 @@ import { Outlet, Link, useLocation } from 'react-router-dom'
 import { Home, Camera, Store, LayoutGrid, Settings, SunMoon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useMainStore } from '@/stores/main'
 
 export default function Layout() {
   const location = useLocation()
+  const { user } = useMainStore()
   const [isDark, setIsDark] = useState(false)
 
   const toggleTheme = () => {
@@ -13,13 +15,15 @@ export default function Layout() {
     document.documentElement.classList.toggle('dark')
   }
 
-  const navItems = [
+  const allNavItems = [
     { name: 'Dashboard', path: '/', icon: Home },
     { name: 'Cadastro', path: '/cadastro', icon: Camera },
     { name: 'Vitrine', path: '/vitrine', icon: Store },
     { name: 'PDV', path: '/venda-local', icon: LayoutGrid },
     { name: 'Admin', path: '/admin', icon: Settings },
   ]
+
+  const navItems = allNavItems.filter((item) => item.name !== 'Admin' || user.role === 'admin')
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-200">

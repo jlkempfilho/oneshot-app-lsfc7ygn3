@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useMainStore } from '@/stores/main'
 import { useNavigate } from 'react-router-dom'
+import { useToast } from '@/hooks/use-toast'
 
 export default function Cadastro() {
   const [step, setStep] = useState<'upload' | 'analyzing' | 'form'>('upload')
@@ -19,12 +20,19 @@ export default function Cadastro() {
     imageUrl: '',
     tags: '',
   })
+  const [channels, setChannels] = useState<Record<string, boolean>>({
+    'Mercado Livre': true,
+    Shopee: true,
+    'Vitrine Digital': true,
+    'WhatsApp Catalog': false,
+  })
+
   const { addProduct } = useMainStore()
   const navigate = useNavigate()
+  const { toast } = useToast()
 
   const handleUploadClick = () => {
     setStep('analyzing')
-    // Simulate AI processing
     setTimeout(() => {
       setFormData({
         title: 'Vestido Midi Plissado',
@@ -35,23 +43,36 @@ export default function Cadastro() {
         tags: 'vestido, feminino, verão, plissado',
       })
       setStep('form')
-    }, 2500)
+    }, 3000)
+  }
+
+  const handleChannelChange = (channel: string) => {
+    setChannels((prev) => ({ ...prev, [channel]: !prev[channel] }))
   }
 
   const handlePublish = () => {
+    const activeChannels = Object.entries(channels)
+      .filter(([_, v]) => v)
+      .map(([k]) => k)
+
     addProduct({
       title: formData.title,
       description: formData.description,
       price: formData.price,
       imageUrl: formData.imageUrl,
-      channels: ['Mercado Livre', 'Vitrine'],
+      channels: activeChannels,
+    })
+
+    toast({
+      title: 'Publicado com Sucesso!',
+      description: `Ativo em ${activeChannels.length} canais!`,
     })
     navigate('/vitrine')
   }
 
   if (step === 'upload') {
     return (
-      <div className="max-w-xl mx-auto space-y-8 flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="max-w-xl mx-auto space-y-8 flex flex-col items-center justify-center min-h-[60vh] animate-fade-in">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-medium tracking-tight">Novo Produto</h1>
           <p className="text-muted-foreground text-sm">Tire uma foto e deixe a IA fazer o resto.</p>
@@ -59,7 +80,7 @@ export default function Cadastro() {
 
         <button
           onClick={handleUploadClick}
-          className="w-full aspect-[4/5] border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 hover:bg-secondary/50 transition-colors group cursor-pointer"
+          className="w-full aspect-[4/5] border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-4 hover:bg-secondary/50 transition-colors group cursor-pointer bg-card shadow-sm"
         >
           <div className="p-6 rounded-full bg-secondary group-hover:scale-110 transition-transform">
             <Camera className="w-8 h-8 opacity-70" />
@@ -82,7 +103,7 @@ export default function Cadastro() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <Skeleton className="aspect-[4/5] w-full rounded-none" />
+          <Skeleton className="aspect-[4/5] w-full" />
           <div className="space-y-6">
             <div className="space-y-2">
               <Skeleton className="h-4 w-20" />
@@ -106,19 +127,19 @@ export default function Cadastro() {
     <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
       <div className="flex items-center justify-between border-b pb-4">
         <h1 className="text-2xl font-light tracking-tight">Revisão IA</h1>
-        <Button onClick={handlePublish} className="uppercase tracking-wider text-xs rounded-none">
+        <Button onClick={handlePublish} className="uppercase tracking-wider text-xs">
           <Save className="w-4 h-4 mr-2" />
           Publicar em Todos
         </Button>
       </div>
 
       <div className="grid md:grid-cols-2 gap-10">
-        <div className="relative aspect-[4/5] bg-muted">
+        <div className="relative aspect-[4/5] bg-muted rounded-xl overflow-hidden shadow-md">
           <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
           <Button
             variant="secondary"
             size="icon"
-            className="absolute bottom-4 right-4 rounded-full shadow-md"
+            className="absolute bottom-4 right-4 rounded-full shadow-lg"
           >
             <ImagePlus className="w-4 h-4" />
           </Button>
@@ -132,7 +153,7 @@ export default function Cadastro() {
             <Input
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="text-lg rounded-none"
+              className="text-lg"
             />
           </div>
 
@@ -143,7 +164,7 @@ export default function Cadastro() {
             <Textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="h-32 rounded-none resize-none"
+              className="h-32 resize-none"
             />
           </div>
 
@@ -158,12 +179,12 @@ export default function Cadastro() {
                   type="number"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                  className="pl-9 rounded-none text-lg font-medium"
+                  className="pl-9 text-lg font-medium"
                 />
               </div>
             </div>
             <div className="space-y-2 flex flex-col justify-end">
-              <div className="flex items-center justify-between p-3 border">
+              <div className="flex items-center justify-between p-3 border rounded-md shadow-sm">
                 <Label className="text-xs uppercase tracking-widest cursor-pointer">
                   Peça Única
                 </Label>
@@ -177,10 +198,14 @@ export default function Cadastro() {
               Publicar nos Canais
             </Label>
             <div className="space-y-3">
-              {['Mercado Livre', 'Shopee', 'Vitrine Digital', 'WhatsApp Catalog'].map((channel) => (
+              {Object.keys(channels).map((channel) => (
                 <div key={channel} className="flex items-center space-x-3">
-                  <Checkbox id={channel} defaultChecked />
-                  <Label htmlFor={channel} className="font-normal">
+                  <Checkbox
+                    id={channel}
+                    checked={channels[channel]}
+                    onCheckedChange={() => handleChannelChange(channel)}
+                  />
+                  <Label htmlFor={channel} className="font-normal cursor-pointer">
                     {channel}
                   </Label>
                 </div>

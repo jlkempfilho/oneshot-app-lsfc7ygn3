@@ -11,7 +11,7 @@ export default function NotFound() {
           A página que você está procurando não existe ou foi movida.
         </p>
       </div>
-      <Button asChild variant="outline" className="rounded-none uppercase tracking-wider mt-8">
+      <Button asChild variant="outline" className="uppercase tracking-wider mt-8">
         <Link
           to="/"
           replace

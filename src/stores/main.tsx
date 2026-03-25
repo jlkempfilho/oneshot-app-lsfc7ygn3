@@ -21,7 +21,12 @@ export interface Activity {
   type: 'sale' | 'system' | 'sync'
 }
 
+export interface User {
+  role: 'admin' | 'user'
+}
+
 interface MainStoreContext {
+  user: User
   products: Product[]
   activities: Activity[]
   stats: {
@@ -55,16 +60,6 @@ const initialProducts: Product[] = [
     channels: ['Vitrine', 'Shopee'],
     createdAt: new Date().toISOString(),
   },
-  {
-    id: 'p3',
-    title: 'Camisa Seda Off-White',
-    description: 'Camisa clássica em seda pura com caimento fluido.',
-    price: 499.0,
-    imageUrl: 'https://img.usecurling.com/p/400/600?q=white%20silk%20shirt',
-    status: 'sold',
-    channels: ['Vitrine'],
-    createdAt: new Date().toISOString(),
-  },
 ]
 
 const initialActivities: Activity[] = [
@@ -79,6 +74,7 @@ const initialActivities: Activity[] = [
 const MainContext = createContext<MainStoreContext | null>(null)
 
 export const MainProvider = ({ children }: { children: ReactNode }) => {
+  const [user] = useState<User>({ role: 'admin' })
   const [products, setProducts] = useState<Product[]>(initialProducts)
   const [activities, setActivities] = useState<Activity[]>(initialActivities)
 
@@ -99,10 +95,6 @@ export const MainProvider = ({ children }: { children: ReactNode }) => {
       }
       setProducts((prev) => [newProduct, ...prev])
       addActivity(`Novo produto cadastrado: ${product.title}`, 'system')
-      toast({
-        title: 'Produto Cadastrado',
-        description: 'O produto foi adicionado e sincronizado.',
-      })
     },
     [addActivity],
   )
@@ -114,22 +106,16 @@ export const MainProvider = ({ children }: { children: ReactNode }) => {
       )
       const product = products.find((p) => p.id === productId)
 
-      // Deterministic sync logic simulation
       addActivity(`Venda realizada via ${channel}: ${product?.title}`, 'sale')
       toast({
         title: 'Estoque baixado!',
-        description: `Venda concluída no canal ${channel}. Sincronizando pausas...`,
+        description: 'Canais sincronizados',
         variant: 'default',
       })
 
-      // Simulate pausing other channels
       setTimeout(() => {
         addActivity(`Pausado em todos os outros canais para evitar overselling.`, 'sync')
-        toast({
-          title: 'Canais Sincronizados',
-          description: 'Anúncios pausados nos demais marketplaces.',
-        })
-      }, 1500)
+      }, 1000)
     },
     [products, addActivity],
   )
@@ -141,11 +127,12 @@ export const MainProvider = ({ children }: { children: ReactNode }) => {
 
   const availableProducts = products.filter((p) => p.status === 'available')
   const totalValue = availableProducts.reduce((acc, p) => acc + p.price, 0)
-  const salesToday = products.filter((p) => p.status === 'sold').length * 250 // mock value
+  const salesToday = products.filter((p) => p.status === 'sold').length * 250
 
   return (
     <MainContext.Provider
       value={{
+        user,
         products,
         activities,
         stats: {
