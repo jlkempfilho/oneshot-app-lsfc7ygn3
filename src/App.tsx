@@ -9,6 +9,7 @@ import Admin from './pages/Admin'
 import Cadastro from './pages/Cadastro'
 import Vitrine from './pages/Vitrine'
 import VendaLocal from './pages/VendaLocal'
+import DocsSistema from './pages/DocsSistema'
 import NotFound from './pages/NotFound'
 
 const AppRoutes = () => {
@@ -25,6 +26,7 @@ const AppRoutes = () => {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/vitrine" element={<Vitrine />} />
         <Route path="/venda-local" element={<VendaLocal />} />
+        <Route path="/docs/sistema" element={<DocsSistema />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
